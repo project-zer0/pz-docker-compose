@@ -36,7 +36,7 @@ class DockerComposeCommand extends ProcessCommand
     {
         return new Process(
             DockerComposeExecProcess::BINARY,
-            [],
+            $processArgs,
             $this->getEnvVariables($input->getOption('env')),
             true,
         );
