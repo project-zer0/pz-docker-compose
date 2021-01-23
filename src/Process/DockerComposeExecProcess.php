@@ -15,6 +15,8 @@ class DockerComposeExecProcess implements ProcessInterface
     public const BINARY = '/usr/bin/docker-compose';
 
     public function __construct(
+        protected array $configuration,
+        protected string $env,
         protected string $serviceName,
         protected array $arguments = [],
         protected bool $detached = false,
@@ -90,8 +92,24 @@ class DockerComposeExecProcess implements ProcessInterface
 
         $args = array_merge($args, $this->arguments);
 
-        $process = new Process(static::BINARY, $args, replaceCurrentProcess: $this->exec);
+        $process = new Process(
+            static::BINARY,
+            $args,
+            environmentVariables: $this->getEnvVariables($this->env),
+            replaceCurrentProcess: $this->exec
+        );
 
         return $process->execute();
+    }
+
+    protected function getEnvVariables(string $env): array
+    {
+        return array_merge(
+            $_ENV,
+            [
+                'COMPOSE_PROJECT_NAME' => $this->configuration['docker_compose']['project_name'] ?? 'project-zer0',
+                'COMPOSE_FILE'         => $this->configuration['docker_compose']['files'][$env] ?? './docker-compose.yaml',
+            ]
+        );
     }
 }
