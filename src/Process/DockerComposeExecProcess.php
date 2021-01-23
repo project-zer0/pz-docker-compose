@@ -64,6 +64,13 @@ class DockerComposeExecProcess implements ProcessInterface
 
     public function execute(): int
     {
+        $process = $this->getProcess();
+
+        return $process->execute();
+    }
+
+    public function getProcess(): Process
+    {
         $args = [];
 
         $args[] = 'exec';
@@ -92,14 +99,12 @@ class DockerComposeExecProcess implements ProcessInterface
 
         $args = array_merge($args, $this->arguments);
 
-        $process = new Process(
+        return new Process(
             static::BINARY,
             $args,
             environmentVariables: $this->getEnvVariables($this->env),
             replaceCurrentProcess: $this->exec
         );
-
-        return $process->execute();
     }
 
     protected function getEnvVariables(string $env): array
