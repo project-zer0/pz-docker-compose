@@ -89,7 +89,7 @@ class UpCommand extends BaseDockerComposeCommand
                 DockerComposeExecProcess::BINARY,
                 ['down'],
                 $this->getEnvVariables($input->getOption('env')),
-                true,
+                false,
             );
 
             $exitCode = $downProcess->execute();
