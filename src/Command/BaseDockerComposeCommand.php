@@ -51,7 +51,7 @@ abstract class BaseDockerComposeCommand extends PzCommand
             [
                 'COMPOSE_PROJECT_NAME' => $this->getConfiguration()['docker_compose']['project_name'] ?? 'project-zer0',
                 'COMPOSE_FILE'         => $this->getConfiguration(
-                    )['docker_compose']['files'][$env] ?? './docker-compose.yaml',
+                    )['docker_compose']['files'][$env] ?? '$PZ_PWD/docker-compose.yaml',
             ]
         );
     }

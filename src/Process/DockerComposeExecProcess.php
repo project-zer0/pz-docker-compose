@@ -113,7 +113,7 @@ class DockerComposeExecProcess implements ProcessInterface
             $_ENV,
             [
                 'COMPOSE_PROJECT_NAME' => $this->configuration['docker_compose']['project_name'] ?? 'project-zer0',
-                'COMPOSE_FILE'         => $this->configuration['docker_compose']['files'][$env] ?? './docker-compose.yaml',
+                'COMPOSE_FILE'         => $this->configuration['docker_compose']['files'][$env] ?? '$PZ_PWD/docker-compose.yaml',
             ]
         );
     }
