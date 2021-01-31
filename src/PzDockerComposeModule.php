@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace ProjectZer0\PzDockerCompose;
 
+use LogicException;
 use ProjectZer0\Pz\Config\PzModuleConfigurationInterface;
 use ProjectZer0\Pz\Module\PzModule;
 use ProjectZer0\Pz\ProjectZer0Toolkit;
 use ProjectZer0\PzDockerCompose\Command\DockerComposeCommand;
 use ProjectZer0\PzDockerCompose\Command\DownCommand;
 use ProjectZer0\PzDockerCompose\Command\LogsCommand;
+use ProjectZer0\PzDockerCompose\Command\OpenCommand;
 use ProjectZer0\PzDockerCompose\Command\RestartCommand;
 use ProjectZer0\PzDockerCompose\Command\StartCommand;
 use ProjectZer0\PzDockerCompose\Command\StopCommand;
@@ -22,8 +24,12 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
  */
 class PzDockerComposeModule extends PzModule
 {
+    private ?ProjectZer0Toolkit $toolkit = null;
+
     public function getCommands(): array
     {
+        $toolkit = $this->toolkit ?? throw new LogicException('Invalid Access');
+
         return [
             new DockerComposeCommand(),
             new UpCommand(),
@@ -32,11 +38,13 @@ class PzDockerComposeModule extends PzModule
             new StopCommand(),
             new RestartCommand(),
             new LogsCommand(),
+            new OpenCommand($toolkit),
         ];
     }
 
     public function boot(ProjectZer0Toolkit $toolkit): void
     {
+        $this->toolkit = $toolkit;
     }
 
     public function getConfiguration(): ?PzModuleConfigurationInterface
@@ -54,6 +62,14 @@ class PzDockerComposeModule extends PzModule
                         ->end()
                         ->arrayNode('files')
                             ->requiresAtLeastOneElement()
+                            ->useAttributeAsKey('name')
+                            ->scalarPrototype()
+                            ->end()
+                        ->end()
+                        ->scalarNode('open_url_default')
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->arrayNode('open_urls')
                             ->useAttributeAsKey('name')
                             ->scalarPrototype()
                             ->end()
