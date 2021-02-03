@@ -29,7 +29,8 @@ class DockerComposeCommand extends ProcessCommand
                 InputOption::VALUE_REQUIRED,
                 'Docker Compose environment file defined in ".pz.yaml"',
                 'dev',
-            );
+            )
+            ->ignoreHelp();
     }
 
     public function getProcess(array $processArgs, InputInterface $input, OutputInterface $output): ProcessInterface
